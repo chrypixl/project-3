@@ -9,10 +9,7 @@
     "install": "cd server && npm i && cd ../client && npm i",
     "seed": "cd server && npm run seed",
     "build": "cd client && npm run build",
-    "lint": "eslint .",
-    "preview": "vite preview",
-    "keywords": [],
-    "author": ""
+    "lint": "eslint ."
   },
   "dependencies": {
     "@apollo/client": "^3.7.14",
@@ -22,6 +19,8 @@
     "react-dom": "^18.3.1",
     "react-router-dom": "^6.11.2"
   },
+  "keywords": [],
+  "author": "",
   "devDependencies": {
     "@eslint/js": "^9.9.0",
     "@types/react": "^18.3.3",
