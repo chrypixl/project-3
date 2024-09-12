@@ -11,6 +11,7 @@ const typeDefs = `
     title: String
     author: String
     createdAt: String
+    recordingAudio: String
   }
 
   type Auth {
@@ -27,18 +28,11 @@ const typeDefs = `
   }
 
   type Mutation {
-    addUser(username: String!, email: String!): Auth
-    login(email: String!): Auth
-    addRecording(recordingAudio: ID!): Recording
+    addUser(username: String!, email: String!, password: String!): Auth
+    login(username: String!, password: String!): Auth
+    addRecording(title: String!, author: String!, recordingAudio: String!): Recording
     removeRecording(recordingId: ID!): Recording
   }
 `;
-//? What parameters does Recording require besides title, author, and createdAt? What parameter will make up the content of stored recording?
-//* For now, using recordingAudio as a placeholder/possible solution
-//TODO: addRecording requires content parameters. example: A mutation adding a blog post would require addPost(postText: String!).
 
 module.exports = typeDefs;
-
-
-
-

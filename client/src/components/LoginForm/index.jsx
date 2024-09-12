@@ -1,16 +1,27 @@
 import { useState } from 'react';
 import { TextField, Button, Box, Typography, Container, Grid } from '@mui/material';
 import { useNavigate } from 'react-router-dom'; 
+import { useMutation } from '@apollo/client';
+import { LOGIN_USER } from '../../utils/mutations';
 
 const LoginForm = () => {
-  const [email, setEmail] = useState('');
+  const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const [login, { error }] = useMutation(LOGIN_USER);
   const navigate = useNavigate(); 
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log('Email:', email);
-    console.log('Password:', password);
+
+    try {
+      const { data } = await login({
+        variables: { username, password },
+      });
+      localStorage.setItem('token', data.login.token);
+      navigate('/'); 
+    } catch (err) {
+      console.error('Login failed:', err);
+    }
   };
 
   const handleSignUp = () => {
@@ -35,13 +46,13 @@ const LoginForm = () => {
             margin="normal"
             required
             fullWidth
-            id="email"
-            label="Email Address"
-            name="email"
-            autoComplete="email"
+            id="username"
+            label="Username"
+            name="username"
+            autoComplete="username"
             autoFocus
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
           />
           <TextField
             margin="normal"
@@ -55,6 +66,7 @@ const LoginForm = () => {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
           />
+          {error && <Typography color="error">{error.message}</Typography>}
           <Button
             type="submit"
             fullWidth
