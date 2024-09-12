@@ -1,75 +1,62 @@
-import { useQuery } from '@apollo/client';
-
-
-
+import {useQuery} from '@apollo/client';
 import {QUERY_RECORDINGS} from '../utils/queries';
+import Keystroke from '../components/Keystroke';
 
 const Home = () => {
     const { loading, data } = useQuery(QUERY_RECORDINGS);
     const recordings = data?.recordings || [];
+    const keys = document.querySelectorAll('.key'); //? Change reference type, look at React compatible query selection
+  
+    function playSound(event) {
+        event.preventDefault();
+    
+        const audio = document.querySelector(`audio[data-key = "${event.keyCode}"]`); //? Change reference type, look at useRef hook
+        const key = document.querySelector(`.key[data-key = "${event.keyCode}"]`); //? Change reference type, look at useRef hook
+        if (!audio) return;
+        audio.currentTime = 0;
+        audio.play();
+        addTrackToStream(audio.src);
+        key.classList.add('playing');
+    };
+
+    function removeTransition(event) {
+        if(event.propertyName !== 'transform') return;
+        this.classList.remove('playing');
+    }
+
+    window.addEventListener('keydown', playSound) // Event listener inside use effect
+    keys.forEach(key => key.addEventListener('transitionend', removeTransition));
 
     return (
         <main>
-            <div class="bg-icon">
-                <div class="keys">
-                    <div data-key="65" class="key" id="a">
-                        <kbd>A</kbd>
-                        <span class="sound">openhat</span>
-                    </div>
-                    <div data-key="83" class="key" id="s">
-                        <kbd>S</kbd>
-                        <span class="sound">hihat</span>
-                    </div>
-                    <div data-key="68" class="key" id="d">
-                        <kbd>D</kbd>
-                        <span class="sound">shaka</span>
-                    </div>
-                    <div data-key="70" class="key" id="f">
-                        <kbd>F</kbd>
-                        <span class="sound">clap</span>
-                    </div>
-                    <div data-key="71" class="key" id="g">
-                        <kbd>G</kbd>
-                        <span class="sound">scratchin'</span>
-                    </div>
-                    <div data-key="72" class="key" id="h">
-                        <kbd>H</kbd>
-                        <span class="sound">snare</span>
-                    </div>
-                    <div data-key="74" class="key" id="j">
-                        <kbd>J</kbd>
-                        <span class="sound">kick</span>
-                    </div>
-                    <div data-key="75" class="key" id="k">
-                        <kbd>K</kbd>
-                        <span class="sound">tom</span>
-                    </div>
-                    <div data-key="76" class="key" id="l">
-                        <kbd>L</kbd>
-                        <span class="sound">boom</span>
-                    </div>
+            <div className="bg-icon">
+                <div className="keys" onKeyDown={playSound}>
+                    <Keystroke dataKey="65" keystrokeKey={"A"} soundType="OpenHat"/>
+                    <Keystroke dataKey="83" keystrokeKey={"S"} soundType="HiHat"/>
+                    <Keystroke dataKey="68" keystrokeKey={"D"} soundType="Shaka"/>
+                    <Keystroke dataKey="70" keystrokeKey={"F"} soundType="Clap"/>
+                    <Keystroke dataKey="71" keystrokeKey={"G"} soundType="Scratchin'"/>
+                    <Keystroke dataKey="72" keystrokeKey={"H"} soundType="Snare"/>
+                    <Keystroke dataKey="74" keystrokeKey={"J"} soundType= "Kick"/>
+                    <Keystroke dataKey="75" keystrokeKey={"K"} soundType="Tom"/>
+                    <Keystroke dataKey="76" keystrokeKey={"L"} soundType="Boom"/>
                 </div>
             
-                <div class="keys">
-                    <div data-key="32" class="key" id="space">
-                        <kbd>  </kbd>
-                        <span class="sound">thump</span>
-                    </div>
+                <div className="keys">
+                    <Keystroke dataKey="32" keystrokeKey={"|__|"} soundType="Thump"/>
                 </div>
             </div>
 
-            <audio data-key="65" src="public/assets/sounds/openhat.wav"></audio>
-            <audio data-key="83" src="public/assets/sounds/hihat.wav"></audio>
-            <audio data-key="68" src="public/assets/sounds/shaka.wav"></audio>
-            <audio data-key="70" src="public/assets/sounds/clap.wav"></audio>
-            <audio data-key="71" src="public/assets/sounds/scratchin'.wav"></audio>
-            <audio data-key="72" src="public/assets/sounds/snare.wav"></audio>
-            <audio data-key="74" src="public/assets/sounds/kick.wav"></audio>
-            <audio data-key="75" src="public/assets/sounds/tom.wav"></audio>
-            <audio data-key="76" src="public/assets/sounds/boom.wav"></audio>
-            <audio data-key="32" src="public/assets/sounds/thump.wav"></audio>
-            <script src="public/js/audio.js"></script>
-            <script src="public/js/index.js"></script>
+            <audio data-key="65" src="../assets/sounds/openhat.wav"></audio>
+            <audio data-key="83" src="../assets/sounds/hihat.wav"></audio>
+            <audio data-key="68" src="../assets/sounds/shaka.wav"></audio>
+            <audio data-key="70" src="../assets/sounds/clap.wav"></audio>
+            <audio data-key="71" src="../assets/sounds/scratchin'.wav"></audio>
+            <audio data-key="72" src="../assets/sounds/snare.wav"></audio>
+            <audio data-key="74" src="../assets/sounds/kick.wav"></audio>
+            <audio data-key="75" src="../assets/sounds/tom.wav"></audio>
+            <audio data-key="76" src="../assets/sounds/boom.wav"></audio>
+            <audio data-key="32" src="../assets/sounds/thump.wav"></audio>
         </main>
     );
 };
