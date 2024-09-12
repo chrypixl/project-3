@@ -8,14 +8,15 @@ import {
     Toolbar, 
     IconButton, 
     Typography, 
-    Menu, 
-    MenuIcon, 
+    Menu,
     Container, 
     Avatar, 
     Button, 
     Tooltip, 
     MenuItem
 } from '@mui/material';
+
+import MenuIcon from '@mui/icons-material/Menu';
 
 const pages = ['Products', 'Pricing', 'Blog'];
 const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
