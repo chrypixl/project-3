@@ -29,7 +29,7 @@ const typeDefs = `
   type Mutation {
     addUser(username: String!, email: String!): Auth
     login(email: String!): Auth
-    addRecording(recordingAudio): Recording
+    addRecording(recordingAudio: ID!): Recording
     removeRecording(recordingId: ID!): Recording
   }
 `;
@@ -38,3 +38,7 @@ const typeDefs = `
 //TODO: addRecording requires content parameters. example: A mutation adding a blog post would require addPost(postText: String!).
 
 module.exports = typeDefs;
+
+
+
+
