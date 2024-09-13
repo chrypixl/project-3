@@ -17,7 +17,7 @@ const LoginForm = () => {
       const { data } = await login({
         variables: { username, password },
       });
-      localStorage.setItem('token', data.login.token);
+      localStorage.setItem('id_token', data.login.token);
       navigate('/'); 
     } catch (err) {
       console.error('Login failed:', err);
