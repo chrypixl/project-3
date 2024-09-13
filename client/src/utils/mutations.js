@@ -1,4 +1,4 @@
-import {gql} from '@apollo/client';
+import { gql } from '@apollo/client';
 
 export const LOGIN_USER = gql`
   mutation login($username: String!, $password: String!) {
@@ -23,15 +23,27 @@ export const ADD_USER = gql`
       }
     }
   }
-    
 `;
 
 export const ADD_RECORDING = gql`
-  mutation addRecording($recordingText: String!) {
-    addRecording(recordingAudio: $recordingAudio) {
+  mutation addRecording($title: String!, $author: String!, $recordingAudio: String!) {
+    addRecording(title: $title, author: $author, recordingAudio: $recordingAudio) {
       _id
+      title
+      author
       recordingAudio
-      recordingAuthor
+      createdAt
+    }
+  }
+`;
+
+export const REMOVE_RECORDING = gql`
+  mutation removeRecording($recordingId: ID!) {
+    removeRecording(recordingId: $recordingId) {
+      _id
+      title
+      author
+      recordingAudio
       createdAt
     }
   }
