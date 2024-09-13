@@ -1,5 +1,6 @@
 const {User, Recording} = require('../models');
 const {signToken, AuthenticationError} = require('../utils/auth');
+const stripe = require('stripe')('sk_test_4eC39HqLyjWDarjtT1zdp7dc');
 
 const resolvers = {
   Query: {
@@ -71,6 +72,27 @@ const resolvers = {
       }
       throw new AuthenticationError('Not authenticated');
     },
+    moneyPlease: async (parent, {tipAmount}, context) => {
+      const url = new URL(context.headers.referer).origin;
+      console.log(tipAmount);
+      const session = await stripe.checkout.sessions.create({
+        payment_method_types: ['card'],
+        line_items:[{
+          price_data: {
+            currency: 'usd',
+            product_data: {
+              name: 'Your tip amount',
+            },
+            unit_amount: tipAmount * 100,
+          },
+          quantity: 1,
+        }],
+        mode: 'payment',
+        success_url: `${url}/?session_id={CHECKOUT_SESSION_ID}`,
+        cancel_url: `${url}/`,
+      });
+      return {url: session.url};
+    }
   },
 };
 
