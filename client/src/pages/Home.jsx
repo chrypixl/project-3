@@ -1,18 +1,18 @@
-import {useRef} from 'react';
-import {useQuery} from '@apollo/client';
-import {QUERY_RECORDINGS} from '../utils/queries';
+import { useRef, useEffect } from 'react';
+import { useQuery } from '@apollo/client';
+import { QUERY_RECORDINGS } from '../utils/queries';
 import Auth from '../utils/auth';
 import Keystroke from '../components/Keystroke';
 import kick from '../assets/sounds/kick.wav';
-import openHat from '../assets/sounds/openHat.wav'
-import boom from '../assets/sounds/boom.wav'
-import clap from '../assets/sounds/clap.wav'
-import hihat from '../assets/sounds/hihat.wav'
-import scratchin from '../assets/sounds/scratchin.wav'
-import shaka from '../assets/sounds/shaka.wav'
-import snare from '../assets/sounds/snare.wav'
-import thump from '../assets/sounds/thump.wav'
-import tom from '../assets/sounds/tom.wav'
+import openHat from '../assets/sounds/openHat.wav';
+import boom from '../assets/sounds/boom.wav';
+import clap from '../assets/sounds/clap.wav';
+import hihat from '../assets/sounds/hihat.wav';
+import scratchin from '../assets/sounds/scratchin.wav';
+import shaka from '../assets/sounds/shaka.wav';
+import snare from '../assets/sounds/snare.wav';
+import thump from '../assets/sounds/thump.wav';
+import tom from '../assets/sounds/tom.wav';
 
 const Home = () => {
     const openHatRef = useRef();
@@ -27,20 +27,14 @@ const Home = () => {
     const boomRef = useRef();
 
     const refs = [openHatRef, hiHatRef, shakaRef, clapRef, scratchRef, snareRef, kickRef, thumpRef, tomRef, boomRef];
-    const {loading, data} = useQuery(QUERY_RECORDINGS);
+    const { loading, data } = useQuery(QUERY_RECORDINGS);
     const recordings = data?.recordings || [];
-    const keys = document.querySelectorAll('.key'); //? Change reference type, look at React compatible query selection
 
-    function playSound(event) {
-        event.preventDefault();
+    const playSound = (event) => {
+        const currentRef = refs.find((refPoint) => refPoint.current.dataset.key === event.keyCode.toString());
 
-        const currentRef = refs.find((refPoint) => {
-            if (refPoint.current.dataset.key == event.keyCode) {
-                return refPoint
-            }
-        })
-
-        const audio = currentRef.current.children[1]
+        if (!currentRef) return;
+        const audio = currentRef.current.children[1];
         const key = currentRef.current.children[0];
 
         if (!audio) return;
@@ -48,51 +42,52 @@ const Home = () => {
 
         const playable = new Audio(audio.src);
         playable.play();
-        addTrackToStream(audio.src);
         key.classList.add('playing');
 
-        setTimeout(() => removeTransition(key), 200);
+        setTimeout(() => key.classList.remove('playing'), 200);
     };
 
-    function removeTransition(key) {
-        key.classList.remove('playing');
-    }
+    useEffect(() => {
+        window.addEventListener('keydown', playSound);
 
-    window.addEventListener('keydown', playSound)
+        return () => {
+            window.removeEventListener('keydown', playSound); 
+        };
+    }, []);
 
     return (
         <main>
             {Auth.loggedIn() ? (
                 <>
                     <div>
-                        <Button className="keys" variant="contained">Record</Button>
-                        <Button className="keys" variant="outlined">Playback</Button>
+                        <button className="keys">Record</button>
+                        <button className="keys">Playback</button>
                     </div>
                 </>
             ) : (
                 <>
-                    <p style={{fontSize: '1.5rem', fontWeight: '700'}}>
-                      Login to record your own tracks.
+                    <p style={{ fontSize: '1.5rem', fontWeight: '700' }}>
+                        Login to record your own tracks.
                     </p>
                 </>
             )}
-                <div className="bg-icon">
-                    <div className="keys" onKeyDown={playSound}>
-                        <Keystroke dataKey="65" keystrokeKey={"A"} refProp={openHatRef} soundType="OpenHat" src={openHat} />
-                        <Keystroke refProp={hiHatRef} dataKey="83" keystrokeKey={"S"} soundType="HiHat" src={hihat} />
-                        <Keystroke refProp={shakaRef} dataKey="68" keystrokeKey={"D"} soundType="Shaka" src={shaka} />
-                        <Keystroke refProp={clapRef} dataKey="70" keystrokeKey={"F"} soundType="Clap" src={clap} />
-                        <Keystroke refProp={scratchRef} dataKey="71" keystrokeKey={"G"} soundType="Scratchin'" src={scratchin} />
-                        <Keystroke refProp={snareRef} dataKey="72" keystrokeKey={"H"} soundType="Snare" src={snare} />
-                        <Keystroke src={kick} refProp={kickRef} dataKey="74" keystrokeKey={"J"} soundType="Kick" />
-                        <Keystroke refProp={tomRef} src={tom} dataKey="75" keystrokeKey={"K"} soundType="Tom" />
-                        <Keystroke refProp={boomRef} dataKey="76" keystrokeKey={"L"} soundType="Boom" src={boom} />
-                    </div>
-
-                    <div className="keys">
-                        <Keystroke src={thump} refProp={thumpRef} dataKey="32" keystrokeKey={"|__|"} soundType="Thump" />
-                    </div>
+            <div className="bg-icon">
+                <div className="keys">
+                    <Keystroke dataKey="65" keystrokeKey="A" refProp={openHatRef} soundType="OpenHat" src={openHat} />
+                    <Keystroke dataKey="83" keystrokeKey="S" refProp={hiHatRef} soundType="HiHat" src={hihat} />
+                    <Keystroke dataKey="68" keystrokeKey="D" refProp={shakaRef} soundType="Shaka" src={shaka} />
+                    <Keystroke dataKey="70" keystrokeKey="F" refProp={clapRef} soundType="Clap" src={clap} />
+                    <Keystroke dataKey="71" keystrokeKey="G" refProp={scratchRef} soundType="Scratchin'" src={scratchin} />
+                    <Keystroke dataKey="72" keystrokeKey="H" refProp={snareRef} soundType="Snare" src={snare} />
+                    <Keystroke dataKey="74" keystrokeKey="J" refProp={kickRef} soundType="Kick" src={kick} />
+                    <Keystroke dataKey="75" keystrokeKey="K" refProp={tomRef} soundType="Tom" src={tom} />
+                    <Keystroke dataKey="76" keystrokeKey="L" refProp={boomRef} soundType="Boom" src={boom} />
                 </div>
+
+                <div className="keys">
+                    <Keystroke dataKey="32" keystrokeKey="|__|" refProp={thumpRef} soundType="Thump" src={thump} />
+                </div>
+            </div>
         </main>
     );
 };
