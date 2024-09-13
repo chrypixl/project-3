@@ -1,4 +1,4 @@
-import {useRef} from 'react';
+import {useEffect, useRef, useState} from 'react';
 import {useQuery} from '@apollo/client';
 import {QUERY_RECORDINGS} from '../utils/queries';
 import Auth from '../utils/auth';
@@ -25,6 +25,86 @@ const Home = () => {
     const thumpRef = useRef();
     const tomRef = useRef();
     const boomRef = useRef();
+
+    //Section will need refactoring lator///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    const [recording, startStop] = useState(false);
+    const isMounted = useRef(false);
+
+    let audioContext =useRef(null);
+    let destination = useRef(null);
+    let mediaRecorder = useRef(null);
+    let recordedChunks = useRef([]);
+
+    function initAudioContext() {
+        if (!audioContext.current) {
+            audioContext.current = new (window.AudioContext || window.webkitAudioContext)();
+            destination.current = audioContext.current.createMediaStreamDestination();
+            mediaRecorder.current = new MediaRecorder(destination.current.stream);
+    
+            mediaRecorder.current.ondataavailable = (event) => {
+                if (event.data.size > 0) {
+                    recordedChunks.current.push(event.data);
+                }
+            };
+    
+            mediaRecorder.current.onstop = () => {
+                if (recordedChunks.current.length > 0) {
+                    const audioBlob = new Blob(recordedChunks.current, { type: 'audio/webm' });
+                    const audioUrl = URL.createObjectURL(audioBlob);
+                    console.log('Recorded audio URL:', audioUrl);
+    
+                    // Change "save" functions here
+                    document.querySelector('.playback').dataset.audio = JSON.stringify(audioUrl);
+                    document.querySelector('.playback').disabled = false;
+                    // Change "save" functions here
+       
+                    recordedChunks.current = [];
+                } else {
+                    console.error('No audio data recorded.');
+                }
+            };
+        }
+    }
+    
+    function addTrackToStream(audioSrc) {
+        const audioElement = new Audio(audioSrc);
+        const track = audioContext.current.createMediaElementSource(audioElement);
+        track.connect(destination.current);
+    
+        audioElement.play();
+    }
+    
+    function playbackRecordedAudio(event) {
+        const recordedAudio = new Audio(JSON.parse(event.target.dataset.audio))
+        recordedAudio.play();
+
+    }
+    
+
+    useEffect(()=>{
+        if(isMounted.current)
+            if(recording){
+                audioContext.current = null;
+                initAudioContext(audioContext.current);
+                mediaRecorder.current.start();
+                console.log('Recording started.');
+            }else{
+                mediaRecorder.current.stop();
+                console.log('Recording stopped.');
+            }
+        else{
+            isMounted.current = true;
+        }
+
+    },[recording])
+
+
+
+
+
+////////////////////////////////////////
+
+
 
     const refs = [openHatRef, hiHatRef, shakaRef, clapRef, scratchRef, snareRef, kickRef, thumpRef, tomRef, boomRef];
     const {loading, data} = useQuery(QUERY_RECORDINGS);
@@ -54,6 +134,9 @@ const Home = () => {
         setTimeout(() => removeTransition(key), 200);
     };
 
+
+
+
     function removeTransition(key) {
         key.classList.remove('playing');
     }
@@ -62,7 +145,7 @@ const Home = () => {
 
     return (
         <main>
-            {Auth.loggedIn() ? (
+            {/*{Auth.loggedIn() ? (
                 <>
                     <div>
                         <Button className="keys" variant="contained">Record</Button>
@@ -75,7 +158,11 @@ const Home = () => {
                       Login to record your own tracks.
                     </p>
                 </>
-            )}
+            )}*/}
+            <div>
+                <button className="keys record"  onClick={() => startStop(!recording)}  variant="contained">{recording?'Stop Recording':'Record'}</button>
+                <button className="keys playback" onClick={playbackRecordedAudio} variant="outlined">Playback</button>
+            </div>
                 <div className="bg-icon">
                     <div className="keys" onKeyDown={playSound}>
                         <Keystroke dataKey="65" keystrokeKey={"A"} refProp={openHatRef} soundType="OpenHat" src={openHat} />
