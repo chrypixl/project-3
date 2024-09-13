@@ -18,7 +18,7 @@ const addDateSuffix = (date) => {
   
   module.exports = ( //exporting timestamp for date formatting
     timestamp,
-    { monthLength = 'short', dateSuffix = true } = {}
+    {monthLength = 'short', dateSuffix = true} = {}
   ) => {
     const months = {
       0: monthLength === 'short' ? 'Jan' : 'January',
