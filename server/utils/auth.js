@@ -1,4 +1,4 @@
-const {GraphQLError} = require('graphql');
+const { GraphQLError } = require('graphql');
 const jwt = require('jsonwebtoken');
 
 const secret = 'mysecretssshhhhhhh';
@@ -14,28 +14,29 @@ module.exports = {
       });
     }
   },
-  authMiddleware: function ({req}) {
-    let token = req.body.token || req.query.token || req.headers.authorization;
 
-    if (req.headers.authorization) {
-      token = token.split(' ').pop().trim();
+  authMiddleware: function ({ req }) {
+    let token = req.headers.authorization || req.body.token || req.query.token;
+
+    if (token && token.startsWith('Bearer ')) {
+      token = token.slice(7, token.length).trim(); // Remove "Bearer " from token
     }
 
     if (!token) {
-      return req;
+      return { user: null };
     }
 
     try {
-      const {authenticatedPerson} = jwt.verify(token, secret, {maxAge: expiration});
-      req.user = authenticatedPerson;
-    } catch {
-      console.log('Invalid token');
+      const decoded = jwt.verify(token, secret);
+      return { user: decoded.authenticatedPerson };
+    } catch (err) {
+      console.log('Invalid token', err);
+      return { user: null };
     }
-
-    return req;
   },
-  signToken: function ({email, username, _id}) {
-    const payload = {email, username, _id};
-    return jwt.sign({authenticatedPerson: payload}, secret, {expiresIn: expiration});
+
+  signToken: function ({ email, username, _id }) {
+    const payload = { email, username, _id };
+    return jwt.sign({ authenticatedPerson: payload }, secret, { expiresIn: expiration });
   },
 };
