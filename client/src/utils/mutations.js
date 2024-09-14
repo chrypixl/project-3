@@ -48,3 +48,11 @@ export const REMOVE_RECORDING = gql`
     }
   }
 `;
+
+export const MONEY_PLEASE = gql`
+  mutation moneyPlease($tipAmount: Float) {
+    moneyPlease(tipAmount: $tipAmount) {
+      url
+    }
+  }
+`;

@@ -19,6 +19,10 @@ const typeDefs = `
     user: User
   }
 
+  type Tipjar {
+    url: String
+  }
+
   type Query {
     users: [User]
     user(username: String!): User
@@ -32,6 +36,7 @@ const typeDefs = `
     login(username: String!, password: String!): Auth
     addRecording(title: String!, author: String!, recordingAudio: String!): Recording
     removeRecording(recordingId: ID!): Recording
+    moneyPlease(tipAmount: Float): Tipjar
   }
 `;
 
