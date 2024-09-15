@@ -3,6 +3,7 @@ const typeDefs = `
     _id: ID
     username: String!
     email: String
+    avatar: String
     recordings: [Recording]
   }
 
@@ -23,6 +24,13 @@ const typeDefs = `
     url: String
   }
 
+  scalar Upload  
+
+  type File {
+    url: String
+    success: Boolean
+    message: String
+  }
   type Query {
     users: [User]
     user(username: String!): User
@@ -33,7 +41,10 @@ const typeDefs = `
 
   type Mutation {
     addUser(username: String!, email: String!, password: String!): Auth
+    updateUser(username: String!, email: String!, password: String!): User
     login(username: String!, password: String!): Auth
+    uploadAvatar(file: Upload!): File
+    updateUserAvatar(fileName: String!): User
     addRecording(title: String!, author: String!, recordingAudio: String!): Recording
     removeRecording(recordingId: ID!): Recording
     moneyPlease(tipAmount: Float): Tipjar
