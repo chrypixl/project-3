@@ -1,6 +1,6 @@
-const { Schema, model } = require('mongoose');
+const { Schema } = require('mongoose');
 const bcrypt = require('bcryptjs'); 
-
+const mongoose = require('mongoose');
 const userSchema = new Schema({
   username: {
     type: String,
@@ -19,6 +19,10 @@ const userSchema = new Schema({
     required: true,
     minlength: 8,
   },
+  avatar: {
+    type: String,
+    default: 'default-avatar.jpg', 
+  },
   recordings: [
     {
       type: Schema.Types.ObjectId,
@@ -28,7 +32,7 @@ const userSchema = new Schema({
 });
 
 userSchema.pre('save', async function (next) {
-  if (this.isModified('password')) {
+  if (this.isNew || this.isModified('password')) {
     const salt = await bcrypt.genSalt(10);
     this.password = await bcrypt.hash(this.password, salt);
   }
@@ -39,6 +43,6 @@ userSchema.methods.isCorrectPassword = async function (password) {
   return bcrypt.compare(password, this.password);
 };
 
-const User = model('User', userSchema);
+const User = mongoose.model('User', userSchema);
 
 module.exports = User;

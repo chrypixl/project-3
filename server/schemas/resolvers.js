@@ -1,6 +1,8 @@
 const {User, Recording} = require('../models');
 const {signToken, AuthenticationError} = require('../utils/auth');
 const stripe = require('stripe')('sk_test_4eC39HqLyjWDarjtT1zdp7dc');
+const { createWriteStream, unlink } = require('fs');
+const path = require('path');
 
 const resolvers = {
   Query: {
@@ -19,9 +21,14 @@ const resolvers = {
     },
     me: async (parent, args, context) => {
       if (context.user) {
-        return User.findOne({_id: context.user._id}).populate('recordings');
+        const userData = await User.findById(context.user._id)
+          .select('-__v -password')
+          .populate('recordings');
+
+        return userData;
       }
-      throw new AuthenticationError('Not authenticated');
+
+      throw new AuthenticationError('Not logged in');
     },
   },
 
@@ -30,6 +37,15 @@ const resolvers = {
       const user = await User.create({username, email, password});
       const token = signToken(user);
       return {token, user};
+    },
+    updateUser: async (parent, args, context) => {
+      if (context.user) {
+        return User.findByIdAndUpdate(context.user.id, args, {
+          new: true,
+        });
+      }
+
+      throw AuthenticationError;
     },
     login: async (parent, {username, password}) => {
       const user = await User.findOne({username});
@@ -72,6 +88,35 @@ const resolvers = {
       }
       throw new AuthenticationError('Not authenticated');
     },
+    uploadAvatar: async (parent, { fileUrl }, context) => {
+      const userId = context.user.id;
+      const user = await User.findById(userId);
+      if (!user) throw new Error('User not found');
+
+      user.avatarUrl = fileUrl;
+      await user.save();
+
+      return {
+        success: true,
+        message: 'Avatar updated successfully',
+        user,
+      };
+    },
+    updateUserAvatar: async (parent, { fileName }, context) => {
+      if (!context.user) {
+        throw new AuthenticationError('You must be logged in to update the avatar.');
+      }
+    
+      const updatedUser = await User.findByIdAndUpdate(
+        context.user._id,
+        { avatar: fileName },
+        { new: true }
+      );
+    
+      return updatedUser;
+    },
+    
+  
     moneyPlease: async (parent, {tipAmount}, context) => {
       const url = new URL(context.headers.referer).origin;
       console.log(tipAmount);
