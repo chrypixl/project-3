@@ -4,16 +4,16 @@ import {QUERY_RECORDINGS} from '../utils/queries';
 import Auth from '../utils/auth';
 import Keystroke from '../components/Keystroke';
 import Tipjar from '../components/Tipjar';
-import kick from '../assets/sounds/kick.wav';
-import openHat from '../assets/sounds/openHat.wav';
-import boom from '../assets/sounds/boom.wav';
-import clap from '../assets/sounds/clap.wav';
-import hihat from '../assets/sounds/hihat.wav';
-import scratchin from '../assets/sounds/scratchin.wav';
-import shaka from '../assets/sounds/shaka.wav';
-import snare from '../assets/sounds/snare.wav';
-import thump from '../assets/sounds/thump.wav';
-import tom from '../assets/sounds/tom.wav';
+import kick from '../../public/assets/sounds/kick.wav';
+import openHat from '../../public/assets/sounds/openHat.wav';
+import boom from '../../public/assets/sounds/boom.wav';
+import clap from '../../public/assets/sounds/clap.wav';
+import hihat from '../../public/assets/sounds/hihat.wav';
+import scratchin from '../../public/assets/sounds/scratchin.wav';
+import shaka from '../../public/assets/sounds/shaka.wav';
+import snare from '../../public/assets/sounds/snare.wav';
+import thump from '../../public/assets/sounds/thump.wav';
+import tom from '../../public/assets/sounds/tom.wav';
 
 const Home = () => {
     const openHatRef = useRef();
@@ -135,8 +135,9 @@ const Home = () => {
     function removeTransition(key) {
         key.classList.remove('playing');
     }
-
-    window.addEventListener('keydown', playSound)
+    useEffect(() => {
+        window.addEventListener('keydown', playSound);
+    }, []);
 
     return (
         <main>
