@@ -151,6 +151,7 @@ const Home = () => {
                     <div>
                         <button className="key record"  onClick={() => startStop(!recording)}  variant="contained">{recording?'Stop Recording':'Record'}</button>
                         <button className="key playback" onClick={playbackRecordedAudio} variant="outlined">Playback</button>
+                        <button className="keys save" onClick={saveAudio} variant="outlined">Save audio</button>
                     </div>
                 </>
             ) : (
