@@ -35,6 +35,7 @@ const Home = () => {
     let destination = useRef(null);
     let mediaRecorder = useRef(null);
     let recordedChunks = useRef([]);
+    let saveChunks = useRef([]);
 
     function initAudioContext() {
         if (!audioContext.current) {
@@ -58,7 +59,7 @@ const Home = () => {
                     document.querySelector('.playback').dataset.audio = JSON.stringify(audioUrl);
                     document.querySelector('.playback').disabled = false;
                     // Change "save" functions here
-       
+                    saveChunks.current = recordedChunks.current;
                     recordedChunks.current = [];
                 } else {
                     console.error('No audio data recorded.');
@@ -98,6 +99,10 @@ const Home = () => {
         }
 
     },[recording])
+
+    function saveAudio(){
+        postDb({chunks: saveChunks.current})
+    }
 
 
 
@@ -146,6 +151,7 @@ const Home = () => {
                     <div>
                         <button className="key record"  onClick={() => startStop(!recording)}  variant="contained">{recording?'Stop Recording':'Record'}</button>
                         <button className="key playback" onClick={playbackRecordedAudio} variant="outlined">Playback</button>
+                        <button className="keys save" onClick={saveAudio} variant="outlined">Save audio</button>
                     </div>
                 </>
             ) : (

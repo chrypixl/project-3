@@ -1,10 +1,28 @@
-import { useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { useQuery, useMutation } from '@apollo/client';
 import { UPDATE_USER_AVATAR } from '../utils/mutations';
 import { QUERY_ME } from '../utils/queries';
 import { Container, Typography, Box, Button, Input, Avatar, Card, CardContent, CircularProgress } from '@mui/material';
 
+import { getAllDb } from '../utils/idb';
+
+
+
 const ProfilePage = () => {
+
+    const [recordings, setRec] = useState([]);
+    useEffect(() => {
+    (async () => {
+        try {
+        // await async "fetchBooks()" function
+        const data = await getAllDb();
+        setRec(data);
+        } catch (err) {
+        console.log('Error occured when fetching recordings');
+        }
+    })();
+    }, []); 
+
     const { data, loading, error } = useQuery(QUERY_ME);
     const [updateUserAvatar] = useMutation(UPDATE_USER_AVATAR, {
         refetchQueries: [{ query: QUERY_ME }],
@@ -114,6 +132,23 @@ const ProfilePage = () => {
                     </Box>
                 </CardContent>
             </Card>
+
+            <div>
+                <h1>Recordings</h1>
+                {recordings.length > 0 && recordings.map((recording) => {
+                    console.log(recording.id)
+                    const audioBlob = new Blob(recording.recording.chunks, { type: 'audio/webm' });
+                    const audioUrl = URL.createObjectURL(audioBlob);
+                    
+                    return <audio key={recording.id} controls>
+                    <source src={audioUrl} type="audio/ogg"/>
+                  Your browser does not support the audio element.
+                  </audio>
+                }
+                )}  
+                      
+            </div>               
+
         </Container>
     );
 };
