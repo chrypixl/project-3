@@ -123,6 +123,7 @@ const Home = () => {
 
         const playable = new Audio(audio.src);
         playable.play();
+        addTrackToStream(audio.src);
         key.classList.add('playing');
 
         setTimeout(() => removeTransition(key), 200);
@@ -157,18 +158,18 @@ const Home = () => {
                 <button className="keys record"  onClick={() => startStop(!recording)}  variant="contained">{recording?'Stop Recording':'Record'}</button>
                 <button className="keys playback" onClick={playbackRecordedAudio} variant="outlined">Playback</button>
             </div>
-            <div className="bg-icon">
-                <div className="keys">
-                    <Keystroke dataKey="65" keystrokeKey="A" refProp={openHatRef} soundType="OpenHat" src={openHat} />
-                    <Keystroke dataKey="83" keystrokeKey="S" refProp={hiHatRef} soundType="HiHat" src={hihat} />
-                    <Keystroke dataKey="68" keystrokeKey="D" refProp={shakaRef} soundType="Shaka" src={shaka} />
-                    <Keystroke dataKey="70" keystrokeKey="F" refProp={clapRef} soundType="Clap" src={clap} />
-                    <Keystroke dataKey="71" keystrokeKey="G" refProp={scratchRef} soundType="Scratchin'" src={scratchin} />
-                    <Keystroke dataKey="72" keystrokeKey="H" refProp={snareRef} soundType="Snare" src={snare} />
-                    <Keystroke dataKey="74" keystrokeKey="J" refProp={kickRef} soundType="Kick" src={kick} />
-                    <Keystroke dataKey="75" keystrokeKey="K" refProp={tomRef} soundType="Tom" src={tom} />
-                    <Keystroke dataKey="76" keystrokeKey="L" refProp={boomRef} soundType="Boom" src={boom} />
-                </div>
+                <div className="bg-icon">
+                    <div className="keys" onKeyDown={playSound}>
+                        <Keystroke dataKey="65" keystrokeKey={"A"} refProp={openHatRef} soundType="OpenHat" src={openHat} />
+                        <Keystroke refProp={hiHatRef} dataKey="83" keystrokeKey={"S"} soundType="HiHat" src={hihat} />
+                        <Keystroke refProp={shakaRef} dataKey="68" keystrokeKey={"D"} soundType="Shaka" src={shaka} />
+                        <Keystroke refProp={clapRef} dataKey="70" keystrokeKey={"F"} soundType="Clap" src={clap} />
+                        <Keystroke refProp={scratchRef} dataKey="71" keystrokeKey={"G"} soundType="Scratchin'" src={scratchin} />
+                        <Keystroke refProp={snareRef} dataKey="72" keystrokeKey={"H"} soundType="Snare" src={snare} />
+                        <Keystroke src={kick} refProp={kickRef} dataKey="74" keystrokeKey={"J"} soundType="Kick" />
+                        <Keystroke refProp={tomRef} src={tom} dataKey="75" keystrokeKey={"K"} soundType="Tom" />
+                        <Keystroke refProp={boomRef} dataKey="76" keystrokeKey={"L"} soundType="Boom" src={boom} />
+                    </div>
 
                 <div className="keys">
                     <Keystroke dataKey="32" keystrokeKey="|__|" refProp={thumpRef} soundType="Thump" src={thump} />
