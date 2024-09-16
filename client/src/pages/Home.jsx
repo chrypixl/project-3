@@ -14,6 +14,9 @@ import shaka from '../assets/sounds/shaka.wav';
 import snare from '../assets/sounds/snare.wav';
 import thump from '../assets/sounds/thump.wav';
 import tom from '../assets/sounds/tom.wav';
+import { postDb } from '../utils/idb';
+
+
 
 const Home = () => {
     const openHatRef = useRef();
@@ -35,6 +38,7 @@ const Home = () => {
     let destination = useRef(null);
     let mediaRecorder = useRef(null);
     let recordedChunks = useRef([]);
+    let saveChunks = useRef([]);
 
     function initAudioContext() {
         if (!audioContext.current) {
@@ -58,7 +62,7 @@ const Home = () => {
                     document.querySelector('.playback').dataset.audio = JSON.stringify(audioUrl);
                     document.querySelector('.playback').disabled = false;
                     // Change "save" functions here
-       
+                    saveChunks.current = recordedChunks.current;
                     recordedChunks.current = [];
                 } else {
                     console.error('No audio data recorded.');
@@ -99,6 +103,10 @@ const Home = () => {
 
     },[recording])
 
+    function saveAudio(){
+        postDb({chunks: saveChunks.current})
+    }
+
 
 
 
@@ -136,7 +144,7 @@ const Home = () => {
         key.classList.remove('playing');
     }
 
-    window.addEventListener('keydown', playSound)
+    window.addEventListener('keydown', playSound) 
 
     return (
         <main>
@@ -157,6 +165,7 @@ const Home = () => {
             <div>
                 <button className="keys record"  onClick={() => startStop(!recording)}  variant="contained">{recording?'Stop Recording':'Record'}</button>
                 <button className="keys playback" onClick={playbackRecordedAudio} variant="outlined">Playback</button>
+                <button className="keys save" onClick={saveAudio} variant="outlined">Save Recording</button>
             </div>
                 <div className="bg-icon">
                     <div className="keys" onKeyDown={playSound}>
