@@ -4,16 +4,16 @@ import {QUERY_RECORDINGS} from '../utils/queries';
 import Auth from '../utils/auth';
 import Keystroke from '../components/Keystroke';
 import Tipjar from '../components/Tipjar';
-import kick from '../assets/sounds/kick.wav';
-import openHat from '../assets/sounds/openHat.wav';
-import boom from '../assets/sounds/boom.wav';
-import clap from '../assets/sounds/clap.wav';
-import hihat from '../assets/sounds/hihat.wav';
-import scratchin from '../assets/sounds/scratchin.wav';
-import shaka from '../assets/sounds/shaka.wav';
-import snare from '../assets/sounds/snare.wav';
-import thump from '../assets/sounds/thump.wav';
-import tom from '../assets/sounds/tom.wav';
+// import kick from '../assets/sounds/kick.wav';
+// import openHat from '../assets/sounds/openHat.wav';
+// import boom from '../assets/sounds/boom.wav';
+// import clap from '../assets/sounds/clap.wav';
+// import hihat from '../assets/sounds/hihat.wav';
+// import scratchin from '../assets/sounds/scratchin.wav';
+// import shaka from '../assets/sounds/shaka.wav';
+// import snare from '../assets/sounds/snare.wav';
+// import thump from '../assets/sounds/thump.wav';
+// import tom from '../assets/sounds/tom.wav';
 
 const Home = () => {
     const openHatRef = useRef();
@@ -140,11 +140,11 @@ const Home = () => {
 
     return (
         <main>
-            {/*{Auth.loggedIn() ? (
+            {Auth.loggedIn() ? (
                 <>
                     <div>
-                        <button className="keys">Record</button>
-                        <button className="keys">Playback</button>
+                        <button className="key record"  onClick={() => startStop(!recording)}  variant="contained">{recording?'Stop Recording':'Record'}</button>
+                        <button className="key playback" onClick={playbackRecordedAudio} variant="outlined">Playback</button>
                     </div>
                 </>
             ) : (
@@ -153,26 +153,22 @@ const Home = () => {
                         Login to record your own tracks.
                     </p>
                 </>
-            )}*/}
-            <div>
-                <button className="keys record"  onClick={() => startStop(!recording)}  variant="contained">{recording?'Stop Recording':'Record'}</button>
-                <button className="keys playback" onClick={playbackRecordedAudio} variant="outlined">Playback</button>
-            </div>
+            )}
                 <div className="bg-icon">
                     <div className="keys" onKeyDown={playSound}>
-                        <Keystroke dataKey="65" keystrokeKey={"A"} refProp={openHatRef} soundType="OpenHat" src={openHat} />
-                        <Keystroke refProp={hiHatRef} dataKey="83" keystrokeKey={"S"} soundType="HiHat" src={hihat} />
-                        <Keystroke refProp={shakaRef} dataKey="68" keystrokeKey={"D"} soundType="Shaka" src={shaka} />
-                        <Keystroke refProp={clapRef} dataKey="70" keystrokeKey={"F"} soundType="Clap" src={clap} />
-                        <Keystroke refProp={scratchRef} dataKey="71" keystrokeKey={"G"} soundType="Scratchin'" src={scratchin} />
-                        <Keystroke refProp={snareRef} dataKey="72" keystrokeKey={"H"} soundType="Snare" src={snare} />
-                        <Keystroke src={kick} refProp={kickRef} dataKey="74" keystrokeKey={"J"} soundType="Kick" />
-                        <Keystroke refProp={tomRef} src={tom} dataKey="75" keystrokeKey={"K"} soundType="Tom" />
-                        <Keystroke refProp={boomRef} dataKey="76" keystrokeKey={"L"} soundType="Boom" src={boom} />
+                    <Keystroke dataKey="65" keystrokeKey="A" refProp={openHatRef} soundType="OpenHat" src="/assets/sounds/openHat.wav" />
+                    <Keystroke dataKey="83" keystrokeKey="S" refProp={hiHatRef} soundType="HiHat" src="/assets/sounds/hihat.wav" />
+                    <Keystroke dataKey="68" keystrokeKey="D" refProp={shakaRef} soundType="Shaka" src="/assets/sounds/shaka.wav" />
+                    <Keystroke dataKey="70" keystrokeKey="F" refProp={clapRef} soundType="Clap" src="/assets/sounds/clap.wav" />
+                    <Keystroke dataKey="71" keystrokeKey="G" refProp={scratchRef} soundType="Scratchin'" src="/assets/sounds/scratchin.wav" />
+                    <Keystroke dataKey="72" keystrokeKey="H" refProp={snareRef} soundType="Snare" src="/assets/sounds/snare.wav" />
+                    <Keystroke dataKey="74" keystrokeKey="J" refProp={kickRef} soundType="Kick" src="/assets/sounds/kick.wav" />
+                    <Keystroke dataKey="75" keystrokeKey="K" refProp={tomRef} soundType="Tom" src="/assets/sounds/tom.wav" />
+                    <Keystroke dataKey="76" keystrokeKey="L" refProp={boomRef} soundType="Boom" src="/assets/sounds/boom.wav" />
                     </div>
 
-                <div className="keys">
-                    <Keystroke dataKey="32" keystrokeKey="|__|" refProp={thumpRef} soundType="Thump" src={thump} />
+                <div className="keys" onKeyDown={playSound}>
+                    <Keystroke dataKey="32" keystrokeKey="|__|" refProp={thumpRef} soundType="Thump" src="/assets/sounds/thump.wav" />
                 </div>
             </div>
             <Tipjar/>
