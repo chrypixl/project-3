@@ -137,10 +137,8 @@ const Home = () => {
     }
     useEffect(() => {
         window.addEventListener('keydown', playSound);
-    },
-    []);
+    }, []);
 
-    console.log("adding eventListener");
     return (
         <main>
             {Auth.loggedIn() ? (
