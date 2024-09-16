@@ -21,12 +21,17 @@ export default function Tip() {
 
     return (
         <form onSubmit={(handleFormSubmit)}>
-<Button size="small">Buy me a coffee ☕</Button>
+<Button 
+  size="large" 
+  color="black">
+  Buy me a coffee ☕
+</Button>
 
         <TextField
+          class="tip-jar"
           id="outlined-number"
           inputRef={tipAmount}
-          label="Number"
+          label=""
           type="number"
           slotProps={{
             inputLabel: {
