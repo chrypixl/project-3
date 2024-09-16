@@ -27,7 +27,7 @@ const Header = () => {
     const pages = ['Home', loggedIn ? 'Profile' : 'Login'];
     
     // Define settings for user menu
-    const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
+    const settings = ['Profile', 'Logout'];
   
     const handleOpenNavMenu = (event) => {
       setAnchorElNav(event.currentTarget);
@@ -68,7 +68,6 @@ const Header = () => {
               variant="h6"
               noWrap
               component="a"
-              href="#app-bar-with-responsive-menu"
               sx={{
                 mr: 2,
                 display: { xs: 'none', md: 'flex' },
@@ -77,9 +76,10 @@ const Header = () => {
                 letterSpacing: '.3rem',
                 color: 'inherit',
                 textDecoration: 'none',
+                fontSize: '3rem',
               }}
             >
-              LOGO HERE
+              BEAT BOX
             </Typography>
   
             <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
@@ -111,7 +111,7 @@ const Header = () => {
               >
                 {pages.map((page) => (
                   <MenuItem key={page} onClick={() => handlePageClick(page)}>
-                    <Typography sx={{ textAlign: 'center' }}>{page}</Typography>
+                    <Typography sx={{ textAlign: 'center', fontSize: '18px' }}>{page}</Typography>
                   </MenuItem>
                 ))}
               </Menu>
@@ -139,7 +139,7 @@ const Header = () => {
                 <Button
                   key={page}
                   onClick={() => handlePageClick(page)}
-                  sx={{ my: 2, color: 'white', display: 'block' }}
+                  sx={{ my: 2, color: 'white', display: 'block', fontSize: '18px' }} // Adjust fontSize here
                 >
                   {page}
                 </Button>
@@ -173,7 +173,7 @@ const Header = () => {
                       key={setting}
                       onClick={setting === 'Logout' ? logout : handleCloseUserMenu}
                     >
-                      <Typography sx={{ textAlign: 'center' }}>{setting}</Typography>
+                      <Typography sx={{ textAlign: 'center', fontSize: '18px' }}>{setting}</Typography>
                     </MenuItem>
                   ))}
                 </Menu>
@@ -186,4 +186,3 @@ const Header = () => {
   };
   
   export default Header;
-  

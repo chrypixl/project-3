@@ -10,14 +10,15 @@ export default function Tip() {
     useEffect(() => {
         if (data) document.location.assign(data.moneyPlease.url)
     }, [data]);
-    const handleFormSubmit = async(event) => {
-        event.preventDefault();
-        const tip = tipAmount.current.value;
-        console.log(tipAmount.current);
-        await formSubmit({variables: {
-            tipAmount: parseFloat(tip),
-        }})
-    }
+    const handleFormSubmit = async (event) => {
+      event.preventDefault();
+      const tip = tipAmount.current.value;
+      try {
+          await formSubmit({ variables: { tipAmount: parseFloat(tip) } });
+      } catch (e) {
+          console.error('Error submitting tip:', e);
+      }
+  };
 
     return (
         <form onSubmit={(handleFormSubmit)}>
