@@ -12,7 +12,7 @@
     "seed": "cd server && npm run seed",
     "build": "cd client && npm run build",
     "lint": "eslint .",
-    "deploy": "concurrently \"npm i\" \"npm run build\""
+    "deploy": "npm i && npm run build"
   },
   "dependencies": {
     "@emotion/react": "^11.13.3",
