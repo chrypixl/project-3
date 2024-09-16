@@ -1,8 +1,8 @@
-const {GraphQLError} = require('graphql');
+const { GraphQLError } = require('graphql');
 const jwt = require('jsonwebtoken');
 
 const secret = 'mysecretssshhhhhhh';
-const expiration = '2h';
+const expiration = '30d';
 
 module.exports = {
   AuthenticationError: class AuthenticationError extends GraphQLError {
@@ -14,28 +14,35 @@ module.exports = {
       });
     }
   },
-  authMiddleware: function ({req}) {
+
+  authMiddleware: function ({ req }) {
     let token = req.body.token || req.query.token || req.headers.authorization;
 
     if (req.headers.authorization) {
       token = token.split(' ').pop().trim();
     }
 
+    console.log('Token received:', token);
+
     if (!token) {
+      console.log('No token found');
       return req;
     }
 
     try {
-      const {authenticatedPerson} = jwt.verify(token, secret, {maxAge: expiration});
-      req.user = authenticatedPerson;
-    } catch {
-      console.log('Invalid token');
+      const { data } = jwt.verify(token, secret);
+      console.log('Decoded data:', data);
+      req.user = data;
+    } catch (err) {
+      console.error('Invalid token:', err);
     }
 
+    console.log('User from context in middleware:', req.user);
     return req;
   },
-  signToken: function ({email, username, _id}) {
-    const payload = {email, username, _id};
-    return jwt.sign({authenticatedPerson: payload}, secret, {expiresIn: expiration});
-  },
-};
+
+  signToken: function ({ username, email, _id }) {
+    const payload = { username, email, _id };
+    return jwt.sign({ data: payload }, secret, { expiresIn: expiration });
+  }
+}

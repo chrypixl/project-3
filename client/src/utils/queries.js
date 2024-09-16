@@ -6,6 +6,7 @@ export const QUERY_USER = gql`
       _id
       username
       email
+      avatar
       recordings {
         _id
         recordingAudio
@@ -38,16 +39,27 @@ export const QUERY_SINGLE_RECORDING = gql`
 `;
 
 export const QUERY_ME = gql`
-  query me {
+ query me {
     me {
-      _id
       username
       email
+      _id
+      avatar
       recordings {
         _id
         recordingAudio
-        recordingAuthor
         createdAt
+      }
+    }
+  }
+`;
+export const UPLOAD_AVATAR = gql`
+  mutation uploadAvatar($fileUrl: String!) {
+    uploadAvatar(fileUrl: $fileUrl) {
+      success
+      message
+      user {
+        avatarUrl
       }
     }
   }

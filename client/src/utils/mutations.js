@@ -48,3 +48,31 @@ export const REMOVE_RECORDING = gql`
     }
   }
 `;
+
+export const MONEY_PLEASE = gql`
+  mutation moneyPlease($tipAmount: Float) {
+    moneyPlease(tipAmount: $tipAmount) {
+      url
+    }
+  }
+`;
+export const UPLOAD_AVATAR = gql`
+  mutation uploadAvatar($fileUrl: String!) {
+   uploadAvatar(fileUrl: $fileUrl) {
+    success
+    message
+    user {
+      avatarUrl
+    }
+  }
+  }
+`;
+export const UPDATE_USER_AVATAR = gql`
+  mutation UpdateUserAvatar($fileName: String!) {
+    updateUserAvatar(fileName: $fileName) {
+      _id
+      username
+      avatar
+    }
+  }
+`;
