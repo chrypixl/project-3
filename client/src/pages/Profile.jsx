@@ -140,8 +140,8 @@ const ProfilePage = () => {
                     const audioBlob = new Blob(recording.recording.chunks, { type: 'audio/webm' });
                     const audioUrl = URL.createObjectURL(audioBlob);
                     
-                    return <audio controls>
-                    <source key={recording.id} src={audioUrl} type="audio/ogg"/>
+                    return <audio key={recording.id} controls>
+                    <source src={audioUrl} type="audio/ogg"/>
                   Your browser does not support the audio element.
                   </audio>
                 }
