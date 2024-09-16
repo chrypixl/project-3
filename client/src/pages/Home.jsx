@@ -123,6 +123,7 @@ const Home = () => {
 
         const playable = new Audio(audio.src);
         playable.play();
+        addTrackToStream(audio.src);
         key.classList.add('playing');
 
         setTimeout(() => removeTransition(key), 200);
