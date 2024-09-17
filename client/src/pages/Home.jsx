@@ -28,7 +28,7 @@ const Home = () => {
     const boomRef = useRef();
 
     const [recording, startStop] = useState(false);
-    const [saveMessage, setSaveMessage] = useState(''); // State for save notification
+    const [saveMessage, setSaveMessage] = useState('');
     const isMounted = useRef(false);
 
     let audioContext = useRef(null);
@@ -79,27 +79,39 @@ const Home = () => {
         recordedAudio.play();
     }
 
-    useEffect(()=>{
-        if(isMounted.current)
-            if(recording){
-                audioContext.current = null;
-                initAudioContext(audioContext.current);
-                mediaRecorder.current.start();
-                console.log('Recording started.');
-            }else{
-                mediaRecorder.current.stop();
-                console.log('Recording stopped.');
+    useEffect(() => {
+        if (isMounted.current) {
+            if (recording) {
+                if (!audioContext.current) {
+                    console.log('Initializing AudioContext and MediaRecorder...');
+                    initAudioContext();
+                }
+    
+                if (mediaRecorder.current) {
+                    mediaRecorder.current.start();
+                    console.log('Recording started.');
+                } else {
+                    console.error('Failed to start recording: MediaRecorder not initialized.');
+                }
+            } else {
+                if (mediaRecorder.current && mediaRecorder.current.state !== 'inactive') {
+                    mediaRecorder.current.stop();
+                    console.log('Recording stopped.');
+                } else {
+                    console.error('No MediaRecorder to stop.');
+                }
             }
-        else{
+        } else {
             isMounted.current = true;
         }
-
-    },[recording])
+    }, [recording]);
+    
+    
 
     function saveAudio() {
         postDb({chunks: saveChunks.current});
-        setSaveMessage('Audio saved successfully!'); // Set save notification
-        setTimeout(() => setSaveMessage(''), 3000); // Clear message after 3 seconds
+        setSaveMessage('Audio saved successfully!'); 
+        setTimeout(() => setSaveMessage(''), 3000); 
     }
 
     const refs = [openHatRef, hiHatRef, shakaRef, clapRef, scratchRef, snareRef, kickRef, thumpRef, tomRef, boomRef];
@@ -107,22 +119,27 @@ const Home = () => {
     const recordings = data?.recordings || [];
 
     const playSound = (event) => {
+        if (event.keyCode === 32) {
+            event.preventDefault();
+        }
+    
         const currentRef = refs.find((refPoint) => refPoint.current.dataset.key === event.keyCode.toString());
-
+    
         if (!currentRef) return;
         const audio = currentRef.current.children[1];
         const key = currentRef.current.children[0];
-
+    
         if (!audio) return;
         audio.currentTime = 0;
-
+    
         const playable = new Audio(audio.src);
         playable.play();
         addTrackToStream(audio.src);
         key.classList.add('playing');
-
+    
         setTimeout(() => removeTransition(key), 200);
     };
+    
 
     function removeTransition(key) {
         key.classList.remove('playing');
@@ -143,7 +160,7 @@ const Home = () => {
                         <button className="key playback" onClick={playbackRecordedAudio} variant="outlined">Playback</button>
                         <button className="key save" onClick={saveAudio} variant="outlined">Save audio</button>
                     </div>
-                    {saveMessage && <p className="save-notification">{saveMessage}</p>} {/* Notification message */}
+                    {saveMessage && <p className="save-notification">{saveMessage}</p>}
                 </>
             ) : (
                 <>
