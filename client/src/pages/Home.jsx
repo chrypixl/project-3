@@ -3,7 +3,6 @@ import {useQuery} from '@apollo/client';
 import {QUERY_RECORDINGS} from '../utils/queries';
 import Auth from '../utils/auth';
 import Keystroke from '../components/Keystroke';
-import Tipjar from '../components/Tipjar';
 import kick from '../../public/assets/sounds/kick.wav';
 import openHat from '../../public/assets/sounds/openHat.wav';
 import boom from '../../public/assets/sounds/boom.wav';
@@ -178,7 +177,6 @@ const Home = () => {
                     <Keystroke dataKey="32" keystrokeKey="|__|" refProp={thumpRef} soundType="Thump" src={thump} />
                 </div>
             </div>
-            <Tipjar/>
         </main>
     );
 };
