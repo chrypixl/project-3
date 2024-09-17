@@ -14,6 +14,7 @@ import shaka from '../../public/assets/sounds/shaka.wav';
 import snare from '../../public/assets/sounds/snare.wav';
 import thump from '../../public/assets/sounds/thump.wav';
 import tom from '../../public/assets/sounds/tom.wav';
+import {postDb} from '../utils/idb'
 
 const Home = () => {
     const openHatRef = useRef();
