@@ -74,8 +74,8 @@ Alejandro Meza, Chris Moore, Khoi Mai
 ### Fixes
 
 - A timing delay can affect a recording by a few milliseconds, which can be very noticeable in this application. Refactor code to minimize delays in recording/playing sounds.
-
 - Styles are currently a work in progress.
+- Spacebar causes navigation jump to the bottom of the page, stops recording.
 
 ### Features
 
