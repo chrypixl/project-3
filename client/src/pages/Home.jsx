@@ -102,6 +102,7 @@ const Home = () => {
     },[recording])
 
     function saveAudio(){
+        console.log(saveChunks.current)
         postDb({chunks: saveChunks.current})
     }
 
