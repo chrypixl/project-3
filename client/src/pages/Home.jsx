@@ -4,7 +4,7 @@ import {QUERY_RECORDINGS} from '../utils/queries';
 import Auth from '../utils/auth';
 import Keystroke from '../components/Keystroke';
 import kick from '/assets/sounds/kick.wav';
-import openHat from '/assets/sounds/openHat.wav';
+import openHat from '/assets/sounds/openhat.wav';
 import boom from '/assets/sounds/boom.wav';
 import clap from '/assets/sounds/clap.wav';
 import hihat from '/assets/sounds/hihat.wav';
