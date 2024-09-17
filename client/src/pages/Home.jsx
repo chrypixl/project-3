@@ -13,7 +13,7 @@ import shaka from '../../public/assets/sounds/shaka.wav';
 import snare from '../../public/assets/sounds/snare.wav';
 import thump from '../../public/assets/sounds/thump.wav';
 import tom from '../../public/assets/sounds/tom.wav';
-import {postDb} from '../utils/idb'
+import {postDb} from '../utils/idb';
 
 const Home = () => {
     const openHatRef = useRef();
@@ -27,11 +27,11 @@ const Home = () => {
     const tomRef = useRef();
     const boomRef = useRef();
 
-    //Section will need refactoring lator///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     const [recording, startStop] = useState(false);
+    const [saveMessage, setSaveMessage] = useState(''); // State for save notification
     const isMounted = useRef(false);
 
-    let audioContext =useRef(null);
+    let audioContext = useRef(null);
     let destination = useRef(null);
     let mediaRecorder = useRef(null);
     let recordedChunks = useRef([]);
@@ -55,10 +55,8 @@ const Home = () => {
                     const audioUrl = URL.createObjectURL(audioBlob);
                     console.log('Recorded audio URL:', audioUrl);
     
-                    // Change "save" functions here
                     document.querySelector('.playback').dataset.audio = JSON.stringify(audioUrl);
                     document.querySelector('.playback').disabled = false;
-                    // Change "save" functions here
                     saveChunks.current = recordedChunks.current;
                     recordedChunks.current = [];
                 } else {
@@ -79,9 +77,7 @@ const Home = () => {
     function playbackRecordedAudio(event) {
         const recordedAudio = new Audio(JSON.parse(event.target.dataset.audio))
         recordedAudio.play();
-
     }
-    
 
     useEffect(()=>{
         if(isMounted.current)
@@ -100,18 +96,11 @@ const Home = () => {
 
     },[recording])
 
-    function saveAudio(){
-        console.log(saveChunks.current)
-        postDb({chunks: saveChunks.current})
+    function saveAudio() {
+        postDb({chunks: saveChunks.current});
+        setSaveMessage('Audio saved successfully!'); // Set save notification
+        setTimeout(() => setSaveMessage(''), 3000); // Clear message after 3 seconds
     }
-
-
-
-
-
-////////////////////////////////////////
-
-
 
     const refs = [openHatRef, hiHatRef, shakaRef, clapRef, scratchRef, snareRef, kickRef, thumpRef, tomRef, boomRef];
     const { loading, data } = useQuery(QUERY_RECORDINGS);
@@ -135,12 +124,10 @@ const Home = () => {
         setTimeout(() => removeTransition(key), 200);
     };
 
-
-
-
     function removeTransition(key) {
         key.classList.remove('playing');
     }
+
     useEffect(() => {
         window.addEventListener('keydown', playSound);
     }, []);
@@ -150,10 +137,13 @@ const Home = () => {
             {Auth.loggedIn() ? (
                 <>
                     <div>
-                        <button className="key record"  onClick={() => startStop(!recording)}  variant="contained">{recording?'Stop Recording':'Record'}</button>
+                        <button className="key record" onClick={() => startStop(!recording)} variant="contained">
+                            {recording ? 'Stop Recording' : 'Record'}
+                        </button>
                         <button className="key playback" onClick={playbackRecordedAudio} variant="outlined">Playback</button>
-                        <button className="keys save" onClick={saveAudio} variant="outlined">Save audio</button>
+                        <button className="key save" onClick={saveAudio} variant="outlined">Save audio</button>
                     </div>
+                    {saveMessage && <p className="save-notification">{saveMessage}</p>} {/* Notification message */}
                 </>
             ) : (
                 <>
@@ -162,8 +152,8 @@ const Home = () => {
                     </p>
                 </>
             )}
-                <div className="bg-icon">
-                    <div className="keys" onKeyDown={playSound}>
+            <div className="bg-icon">
+                <div className="keys" onKeyDown={playSound}>
                     <Keystroke dataKey="65" keystrokeKey="A" refProp={openHatRef} soundType="OpenHat" src={openHat} />
                     <Keystroke dataKey="83" keystrokeKey="S" refProp={hiHatRef} soundType="HiHat" src={hihat} />
                     <Keystroke dataKey="68" keystrokeKey="D" refProp={shakaRef} soundType="Shaka" src={shaka} />
@@ -173,7 +163,7 @@ const Home = () => {
                     <Keystroke dataKey="74" keystrokeKey="J" refProp={kickRef} soundType="Kick" src={kick} />
                     <Keystroke dataKey="75" keystrokeKey="K" refProp={tomRef} soundType="Tom" src={tom} />
                     <Keystroke dataKey="76" keystrokeKey="L" refProp={boomRef} soundType="Boom" src={boom} />
-                    </div>
+                </div>
 
                 <div className="keys" onKeyDown={playSound}>
                     <Keystroke dataKey="32" keystrokeKey="|__|" refProp={thumpRef} soundType="Thump" src={thump} />
