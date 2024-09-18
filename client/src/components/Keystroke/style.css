@@ -1,0 +1,41 @@
+.keys {
+    display: flex;
+    flex-wrap: wrap; /* Allows items to wrap to the next line */
+    justify-content: center; /* Center align items */
+    gap: 10px; /* Space between items */
+    max-width: 100%; /* Ensure it doesn't overflow */
+    margin: 0 auto; /* Center align container if needed */
+}
+
+.keystroke-container {
+    flex: 1 1 auto; /* Allow items to grow and shrink as needed */
+    max-width: 80px; /* Limit the maximum size of each key */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 5px;
+}
+
+
+.key kbd {
+    font-size: 1.2rem; 
+}
+@media (max-width: 768px) {
+    .key {
+        font-size: 0.9rem;
+    }
+
+    .key kbd {
+        font-size: 1rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .key {
+        font-size: 0.8rem;
+    }
+
+    .key kbd {
+        font-size: 0.9rem;
+    }
+}

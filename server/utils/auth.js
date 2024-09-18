@@ -22,22 +22,17 @@ module.exports = {
       token = token.split(' ').pop().trim();
     }
 
-    console.log('Token received:', token);
-
     if (!token) {
-      console.log('No token found');
       return req;
     }
 
     try {
       const { data } = jwt.verify(token, secret);
-      console.log('Decoded data:', data);
       req.user = data;
     } catch (err) {
       console.error('Invalid token:', err);
     }
 
-    console.log('User from context in middleware:', req.user);
     return req;
   },
 

@@ -75,7 +75,7 @@ Alejandro Meza, Chris Moore, Khoi Mai
 
 - A timing delay can affect a recording by a few milliseconds, which can be very noticeable in this application. Refactor code to minimize delays in recording/playing sounds.
 - Styles are currently a work in progress.
-- Spacebar causes navigation jump to the bottom of the page, stops recording.
+
 
 ### Features
 
@@ -83,10 +83,12 @@ Alejandro Meza, Chris Moore, Khoi Mai
 - Multiple beatbox configurations with different sound libraries, selectable.
 - A more robust profile page.
 - Track layering and looping. 
-- Sort/delete saved tracks on tracklist.
+- Sort saved tracks on tracklist.
 - Download saved tracks.
 - Download application.
 - Share tracks and playlists with other users.
+- Make keystroke clickable.
+- Make application mobile friendly
 
 
 ## License

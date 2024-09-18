@@ -1,6 +1,6 @@
-import {useEffect, useRef, useState} from 'react';
-import {useQuery} from '@apollo/client';
-import {QUERY_RECORDINGS} from '../utils/queries';
+import { useEffect, useRef, useState } from 'react';
+import { useQuery } from '@apollo/client';
+import { QUERY_RECORDINGS } from '../utils/queries';
 import Auth from '../utils/auth';
 import Keystroke from '../components/Keystroke';
 import kick from '/assets/sounds/kick.wav';
@@ -13,7 +13,7 @@ import shaka from '/assets/sounds/shaka.wav';
 import snare from '/assets/sounds/snare.wav';
 import thump from '/assets/sounds/thump.wav';
 import tom from '/assets/sounds/tom.wav';
-import {postDb} from '../utils/idb';
+import { postDb } from '../utils/idb';
 
 const Home = () => {
     const openHatRef = useRef();
@@ -42,19 +42,19 @@ const Home = () => {
             audioContext.current = new (window.AudioContext || window.webkitAudioContext)();
             destination.current = audioContext.current.createMediaStreamDestination();
             mediaRecorder.current = new MediaRecorder(destination.current.stream);
-    
+
             mediaRecorder.current.ondataavailable = (event) => {
                 if (event.data.size > 0) {
                     recordedChunks.current.push(event.data);
                 }
             };
-    
+
             mediaRecorder.current.onstop = () => {
                 if (recordedChunks.current.length > 0) {
                     const audioBlob = new Blob(recordedChunks.current, { type: 'audio/webm' });
                     const audioUrl = URL.createObjectURL(audioBlob);
                     console.log('Recorded audio URL:', audioUrl);
-    
+
                     document.querySelector('.playback').dataset.audio = JSON.stringify(audioUrl);
                     document.querySelector('.playback').disabled = false;
                     saveChunks.current = recordedChunks.current;
@@ -65,15 +65,15 @@ const Home = () => {
             };
         }
     }
-    
+
     function addTrackToStream(audioSrc) {
         const audioElement = new Audio(audioSrc);
         const track = audioContext.current.createMediaElementSource(audioElement);
         track.connect(destination.current);
-    
+
         audioElement.play();
     }
-    
+
     function playbackRecordedAudio(event) {
         const recordedAudio = new Audio(JSON.parse(event.target.dataset.audio))
         recordedAudio.play();
@@ -86,7 +86,7 @@ const Home = () => {
                     console.log('Initializing AudioContext and MediaRecorder...');
                     initAudioContext();
                 }
-    
+
                 if (mediaRecorder.current) {
                     mediaRecorder.current.start();
                     console.log('Recording started.');
@@ -105,13 +105,11 @@ const Home = () => {
             isMounted.current = true;
         }
     }, [recording]);
-    
-    
 
     function saveAudio() {
-        postDb({chunks: saveChunks.current});
-        setSaveMessage('Audio saved successfully!'); 
-        setTimeout(() => setSaveMessage(''), 3000); 
+        postDb({ chunks: saveChunks.current });
+        setSaveMessage('Audio saved successfully!');
+        setTimeout(() => setSaveMessage(''), 3000);
     }
 
     const refs = [openHatRef, hiHatRef, shakaRef, clapRef, scratchRef, snareRef, kickRef, thumpRef, tomRef, boomRef];
@@ -122,24 +120,38 @@ const Home = () => {
         if (event.keyCode === 32) {
             event.preventDefault();
         }
-    
+
         const currentRef = refs.find((refPoint) => refPoint.current.dataset.key === event.keyCode.toString());
-    
+
         if (!currentRef) return;
         const audio = currentRef.current.children[1];
         const key = currentRef.current.children[0];
-    
+
         if (!audio) return;
         audio.currentTime = 0;
-    
+
         const playable = new Audio(audio.src);
         playable.play();
         addTrackToStream(audio.src);
         key.classList.add('playing');
-    
+
         setTimeout(() => removeTransition(key), 200);
     };
-    
+
+    const handleClick = (event) => {
+        const key = event.currentTarget.children[0];
+        const audio = event.currentTarget.children[1];
+
+        if (!audio) return;
+        audio.currentTime = 0;
+
+        const playable = new Audio(audio.src);
+        playable.play();
+        addTrackToStream(audio.src);
+        key.classList.add('playing');
+
+        setTimeout(() => removeTransition(key), 200);
+    };
 
     function removeTransition(key) {
         key.classList.remove('playing');
@@ -147,6 +159,7 @@ const Home = () => {
 
     useEffect(() => {
         window.addEventListener('keydown', playSound);
+        return () => window.removeEventListener('keydown', playSound);
     }, []);
 
     return (
@@ -170,20 +183,20 @@ const Home = () => {
                 </>
             )}
             <div className="bg-icon">
-                <div className="keys" onKeyDown={playSound}>
-                    <Keystroke dataKey="65" keystrokeKey="A" refProp={openHatRef} soundType="OpenHat" src={openHat} />
-                    <Keystroke dataKey="83" keystrokeKey="S" refProp={hiHatRef} soundType="HiHat" src={hihat} />
-                    <Keystroke dataKey="68" keystrokeKey="D" refProp={shakaRef} soundType="Shaka" src={shaka} />
-                    <Keystroke dataKey="70" keystrokeKey="F" refProp={clapRef} soundType="Clap" src={clap} />
-                    <Keystroke dataKey="71" keystrokeKey="G" refProp={scratchRef} soundType="Scratchin'" src={scratchin} />
-                    <Keystroke dataKey="72" keystrokeKey="H" refProp={snareRef} soundType="Snare" src={snare} />
-                    <Keystroke dataKey="74" keystrokeKey="J" refProp={kickRef} soundType="Kick" src={kick} />
-                    <Keystroke dataKey="75" keystrokeKey="K" refProp={tomRef} soundType="Tom" src={tom} />
-                    <Keystroke dataKey="76" keystrokeKey="L" refProp={boomRef} soundType="Boom" src={boom} />
+                <div className="keys">
+                    <Keystroke dataKey="65" keystrokeKey="A" refProp={openHatRef} soundType="OpenHat" src={openHat} onClick={handleClick} />
+                    <Keystroke dataKey="83" keystrokeKey="S" refProp={hiHatRef} soundType="HiHat" src={hihat} onClick={handleClick} />
+                    <Keystroke dataKey="68" keystrokeKey="D" refProp={shakaRef} soundType="Shaka" src={shaka} onClick={handleClick} />
+                    <Keystroke dataKey="70" keystrokeKey="F" refProp={clapRef} soundType="Clap" src={clap} onClick={handleClick} />
+                    <Keystroke dataKey="71" keystrokeKey="G" refProp={scratchRef} soundType="Scratchin'" src={scratchin} onClick={handleClick} />
+                    <Keystroke dataKey="72" keystrokeKey="H" refProp={snareRef} soundType="Snare" src={snare} onClick={handleClick} />
+                    <Keystroke dataKey="74" keystrokeKey="J" refProp={kickRef} soundType="Kick" src={kick} onClick={handleClick} />
+                    <Keystroke dataKey="75" keystrokeKey="K" refProp={tomRef} soundType="Tom" src={tom} onClick={handleClick} />
+                    <Keystroke dataKey="76" keystrokeKey="L" refProp={boomRef} soundType="Boom" src={boom} onClick={handleClick} />
+                    
                 </div>
-
                 <div className="keys" onKeyDown={playSound}>
-                    <Keystroke dataKey="32" keystrokeKey="|__|" refProp={thumpRef} soundType="Thump" src={thump} />
+                    <Keystroke dataKey="32" keystrokeKey="|__|" refProp={thumpRef} soundType="Thump" src={thump} onClick={handleClick}/>
                 </div>
             </div>
         </main>
